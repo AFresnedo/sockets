@@ -13,6 +13,9 @@
         Comment:
         <textarea id="chat"></textarea>
       </div>
+      <div>
+        <input type="text" id="name">
+      </div>
       <input type="submit" value="Send">
     </form>
 
@@ -34,7 +37,7 @@
           e.preventDefault();
 
           // get msg contents
-          var msg = $('#chat').val();
+          var msg = $('#name').val() + ': ' + $('#chat').val();
 
           // check for empty msg
           if(!msg) {
@@ -43,15 +46,20 @@
           }
           console.log('enter chat was clicked, saying:', msg);
           // send message to server
-          socket.emit('chat msg', $('#chat').val());
-          // print msg on screen to self
-          printMsg(msg);
+          socket.emit('chat msg', msg);
+          // // print msg on screen to self, but emit sends to self
+          // printMsg(msg);
           // clear message box
           $('#chat').val('');
         })
       });
 
-      // print message to screen for self
+      // on the emit message, 'chat msg' matches
+      socket.on('chat msg', function(msg) {
+        printMsg(msg);
+      });
+
+      // print message to screen
       function printMsg(msg) {
         var p = $('<p>').append(msg);
         $('#results').append(p);

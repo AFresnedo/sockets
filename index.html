@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>Sample Chat App</title>
+  </head>
+  <body>
+    <h2>Chat Box</h2>
+    <h3>Chat Input</h3>
+    <form id="chat-form">
+      <div>
+        Comment:
+        <textarea id="chat"></textarea>
+      </div>
+      <input type="submit" value="Send">
+    </form>
+
+    <hr>
+    <h3>Message History</h3>
+    <div id="results"></div>
+
+    <!-- jquery cdn -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <!-- socket io -->
+    <script src="/socket.io/socket.io.js"></script>
+    <!-- inline script -->
+    <script>
+      var socket = io();
+      $(document).ready(function() {
+        console.log('inline script loaded on this page');
+        $('#chat-form').submit(function(e) {
+          // this prevents it from submitting???
+          e.preventDefault();
+
+          // get msg contents
+          var msg = $('#chat').val();
+
+          // check for empty msg
+          if(!msg) {
+            // TODO improve user feedback ('no empty msg plz')
+            return;
+          }
+          console.log('enter chat was clicked, saying:', msg);
+          // send message to server
+          socket.emit('chat msg', $('#chat').val());
+          // print msg on screen to self
+          printMsg(msg);
+          // clear message box
+          $('#chat').val('');
+        })
+      });
+
+      // print message to screen for self
+      function printMsg(msg) {
+        var p = $('<p>').append(msg);
+        $('#results').append(p);
+      }
+    </script>
+  </body>
+</html>
